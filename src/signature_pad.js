@@ -1,3 +1,36 @@
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module unless amdModuleId is set
+    define([], function () {
+      return (root['SignaturePad'] = factory());
+    });
+  } else if (typeof exports === 'object') {
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like environments that support module.exports,
+    // like Node.
+    module.exports = factory();
+  } else {
+    root['SignaturePad'] = factory();
+  }
+}(this, function () {
+
+/*!
+ * Signature Pad v1.5.3
+ * https://github.com/szimek/signature_pad
+ *
+ * Copyright 2016 Szymon Nowak
+ * Released under the MIT license
+ *
+ * The main idea and some parts of the code (e.g. drawing variable width Bézier curve) are taken from:
+ * http://corner.squareup.com/2012/07/smoother-signatures.html
+ *
+ * Implementation of interpolation using cubic Bézier curves is taken from:
+ * http://benknowscode.wordpress.com/2012/09/14/path-interpolation-using-cubic-bezier-and-control-point-estimation-in-javascript
+ *
+ * Algorithm for approximated length of a Bézier curve is taken from:
+ * http://www.lemoda.net/maths/bezier-length/index.html
+ *
+ */
 var SignaturePad = (function (document) {
     "use strict";
 
@@ -87,7 +120,7 @@ var SignaturePad = (function (document) {
     SignaturePad.prototype.fromDataURL = function (dataUrl) {
         var self = this,
             image = new Image(),
-            ratio = Math.max(window.devicePixelRatio || 1, 1),
+            ratio = window.devicePixelRatio || 1,
             width = this._canvas.width / ratio,
             height = this._canvas.height / ratio;
 
@@ -158,9 +191,6 @@ var SignaturePad = (function (document) {
     };
 
     SignaturePad.prototype.off = function () {
-        this._canvas.style.msTouchAction = 'auto';
-        this._canvas.style.touchAction = 'auto';
-
         this._canvas.removeEventListener("mousedown", this._handleMouseDown);
         this._canvas.removeEventListener("mousemove", this._handleMouseMove);
         document.removeEventListener("mouseup", this._handleMouseUp);
@@ -353,3 +383,7 @@ var SignaturePad = (function (document) {
 
     return SignaturePad;
 })(document);
+
+return SignaturePad;
+
+}));
